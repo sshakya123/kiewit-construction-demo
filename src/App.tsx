@@ -1,19 +1,5 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import Input from './reusuable/input';
-
-// Array of construction projects
-const projects = [
-  {
-    id: 1,
-    name: 'Project 1',
-    description: 'Description of project 1',
-  },
-  {
-    id: 2,
-    name: 'Project 2',
-    description: 'Description of project 2',
-  },
-];
 
 interface Project extends NewProject {
   id: number;
@@ -31,8 +17,13 @@ const newProject: NewProject = {
 
 export default function App() {
   const [project, setProject] = useState(newProject);
+  const [projects, setProjects] = useState<Project[]>([]);
 
-  function onSubmit() {}
+  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setProjects([...projects, { ...project, id: projects.length + 1 }]);
+    setProject(newProject);
+  }
 
   function onChange(event: React.ChangeEvent<HTMLInputElement>) {
     setProject({ ...project, [event.target.id]: event.target.value });
