@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Input from './reusuable/input';
+import Input from './reusuable/Input';
 
 interface Project extends NewProject {
   id: number;
