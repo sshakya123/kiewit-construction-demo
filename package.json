@@ -7,7 +7,7 @@
     "dev": "vite",
     "start": "run-p start-app start-api",
     "start-app": "vite",
-    "start-api": "json-server --watch db.json --port 3001 --delay 2000",
+    "start-api": "json-server --watch db.json --port 3001",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "test": "vitest"
