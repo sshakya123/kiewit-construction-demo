@@ -2,20 +2,27 @@ type InputProps = {
   label: string;
   id: string;
   value: string;
+  type?: 'text' | 'number' | 'email' | 'password' | 'date';
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
-export default function Input(props: InputProps) {
+export default function Input({
+  label,
+  id,
+  value,
+  type = 'text',
+  onChange,
+}: InputProps) {
   return (
     <div>
-      <label htmlFor={props.id}>{props.label}</label>
+      <label htmlFor={id}>{label}</label>
       <br />
-      <input
-        type='text'
-        onChange={props.onChange}
-        id={props.id}
-        value={props.value}
-      />
+      <input type={type} onChange={onChange} id={id} value={value} />
     </div>
   );
 }
+
+// Alternative method for declaring default props
+// Input.defaultProps = {
+//   type: "text",
+// };

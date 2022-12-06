@@ -13,10 +13,27 @@ it('should render an input with the provided value', () => {
   expect(screen.getByRole('textbox', { name: 'My Label' })).toHaveValue('val');
 });
 
-// it('should fire the onChange handler on keypress', () => {
-//   const onChange = vi.fn();
-//   render(<Input label='My Label' id='id' value='val' onChange={onChange} />);
-//   screen.getByLabelText('My Label').focus();
-//   userEvent.keyboard('a');
-//   expect(onChange).toHaveBeenCalledTimes(1);
-// });
+it('should fire the onChange handler on keypress', async () => {
+  const onChange = vi.fn();
+  render(<Input label='My Label' id='id' value='val' onChange={onChange} />);
+  await userEvent.type(screen.getByLabelText('My Label'), 'a');
+  expect(onChange).toHaveBeenCalledTimes(1);
+});
+
+it('should render a text input by default', () => {
+  render(<Input label='My Label' id='id' value='val' onChange={() => {}} />);
+  expect(screen.getByLabelText('My Label')).toHaveAttribute('type', 'text');
+});
+
+it('should render a password input when passed a type of password', () => {
+  render(
+    <Input
+      label='My Label'
+      id='id'
+      value='val'
+      onChange={() => {}}
+      type='password'
+    />
+  );
+  expect(screen.getByLabelText('My Label')).toHaveAttribute('type', 'password');
+});
