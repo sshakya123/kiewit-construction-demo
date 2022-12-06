@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import Input from './reusuable/Input';
-import Spinner from './reusuable/spinner';
+import Spinner from './reusuable/Spinner';
 import { deleteProject, getProjects } from './services/projectService';
 
 export interface Project extends NewProject {
@@ -92,7 +92,7 @@ export default function App() {
       </li>
     ));
   }
-
+  throw new Error('OOOPs');
   return (
     <>
       <h1>Projects</h1>
