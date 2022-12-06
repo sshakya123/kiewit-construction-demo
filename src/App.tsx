@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import Input from './reusuable/Input';
 import Spinner from './reusuable/spinner';
 import { deleteProject, getProjects } from './services/projectService';
@@ -71,10 +72,10 @@ export default function App() {
       <li key={project.id}>
         <button
           onClick={async () => {
-            await deleteProject(project.id);
+            deleteProject(project.id);
             // Option 1: Update local state to reflect the deletion.
             setProjects(projects.filter((p) => p.id !== project.id));
-
+            toast.success(project.name + 'deleted');
             // Option 2: Fetch the updated list of projects from the server.
             // const allProjects = await getProjects();
             // setProjects(allProjects);

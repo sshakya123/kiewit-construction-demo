@@ -1,11 +1,6 @@
 {
   "projects": [
     {
-      "id": 1,
-      "name": "Lenexa Nuclear Power Plant",
-      "description": "Nuke Plant"
-    },
-    {
       "id": 2,
       "name": "Clean Coal Plant",
       "description": "Clean Version"
