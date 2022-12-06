@@ -92,7 +92,6 @@ export default function App() {
       </li>
     ));
   }
-  throw new Error('OOOPs');
   return (
     <>
       <h1>Projects</h1>
