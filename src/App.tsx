@@ -15,12 +15,31 @@ const newProject: NewProject = {
   description: '',
 };
 
+type Errors = {
+  name?: string;
+  description?: string;
+};
+
 export default function App() {
   const [project, setProject] = useState(newProject);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [errors, setErrors] = useState<Errors>({});
+
+  // function renderProject(project: Project) {
+  //   return <li key={project.id}>{project.name}</li>;
+  // }
+
+  function validate() {
+    const errors: Errors = {};
+    if (!project.name) errors.name = 'Name is required';
+    if (!project.description) errors.description = 'Description is required';
+    return errors;
+  }
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const formIsValid = Object.keys(validate()).length === 0; // it's valid if validate returns an empty object
+    if (!formIsValid) return; // return early if the form is invalid
     setProjects([...projects, { ...project, id: projects.length + 1 }]);
     setProject(newProject);
   }

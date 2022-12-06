@@ -3,6 +3,7 @@ type InputProps = {
   id: string;
   value: string;
   type?: 'text' | 'number' | 'email' | 'password' | 'date';
+  error?: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -11,6 +12,7 @@ export default function Input({
   id,
   value,
   type = 'text',
+  error,
   onChange,
 }: InputProps) {
   return (
@@ -18,6 +20,7 @@ export default function Input({
       <label htmlFor={id}>{label}</label>
       <br />
       <input type={type} onChange={onChange} id={id} value={value} />
+      <div>{error}</div>
     </div>
   );
 }

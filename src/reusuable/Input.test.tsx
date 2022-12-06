@@ -37,3 +37,16 @@ it('should render a password input when passed a type of password', () => {
   );
   expect(screen.getByLabelText('My Label')).toHaveAttribute('type', 'password');
 });
+
+it('should render an error message when passed an error', () => {
+  render(
+    <Input
+      label='My Label'
+      id='id'
+      value='val'
+      onChange={() => {}}
+      error='Error Message'
+    />
+  );
+  expect(screen.getByText('Error Message')).toBeInTheDocument();
+});
