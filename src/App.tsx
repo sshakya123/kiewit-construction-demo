@@ -6,7 +6,7 @@ export interface Project extends NewProject {
   id: number;
 }
 
-export interface NewProject {
+interface NewProject {
   name: string;
   description: string;
 }
@@ -33,7 +33,7 @@ export default function App() {
       setProjects(projectsResponse);
     }
     getAllProjects();
-    // Empty dependency list below means "Run this effect"
+    // Empty dependency list below means "Run this effect once after the first render."
   }, []);
 
   // function renderProject(project: Project) {
