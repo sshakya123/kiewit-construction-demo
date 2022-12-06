@@ -73,7 +73,7 @@ export default function App() {
         <button
           onClick={async () => {
             try {
-              await deleteProject(project.id + 100);
+              await deleteProject(project.id);
               // Option 1: Update local state to reflect the deletion.
               setProjects(projects.filter((p) => p.id !== project.id));
               toast.success(project.name + 'deleted');
