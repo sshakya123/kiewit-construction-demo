@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import Input from './reusuable/Input';
-import { getProjects } from './services/projectService';
+import { deleteProject, getProjects } from './services/projectService';
 
 export interface Project extends NewProject {
   id: number;
@@ -84,7 +84,23 @@ export default function App() {
       </form>
       <ul>
         {projects.map((project) => (
-          <li key={project.id}>{project.name}</li>
+          <li key={project.id}>
+            <button
+              onClick={async () => {
+                deleteProject(project.id);
+                // Option 1: Update local state to reflect the deletion
+                setProjects(projects.filter((p) => p.id !== project.id));
+
+                // Option 2: Fetch the updated list of projects from the server
+                // const allProjects = await getProjects();
+                // setProjects(allProjects);
+              }}
+              aria-label={'Delete ' + project.name}
+            >
+              Delete
+            </button>
+            {project.name}
+          </li>
         ))}
       </ul>
     </>

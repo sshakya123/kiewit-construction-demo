@@ -7,3 +7,10 @@ export async function getProjects() {
 	// Zod is especially useful if you do not control the API.
 	return res.json() as Promise<Project[]>;
 }
+
+export async function deleteProject(id: number) {
+	const res = await fetch("http://localhost:3001/projects/" + id, {
+		method: "DELETE",
+	});
+	if (!res.ok) throw new Error(res.statusText);
+}
