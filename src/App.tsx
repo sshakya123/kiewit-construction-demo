@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Input from './reusuable/Input';
 
 interface Project extends NewProject {
@@ -15,6 +15,7 @@ const newProject: NewProject = {
   description: '',
 };
 
+// Contains an optional property for storing the validation error message for each field
 type Errors = {
   name?: string;
   description?: string;
@@ -30,10 +31,12 @@ export default function App() {
   // }
 
   function validate() {
-    const errors: Errors = {};
-    if (!project.name) errors.name = 'Name is required';
-    if (!project.description) errors.description = 'Description is required';
-    return errors;
+    // Using underscore to avoid shadowing the parent scope's errors variable
+    const _errors: Errors = {};
+    if (!project.name) _errors.name = 'Name is required';
+    if (!project.description) _errors.description = 'Description is required';
+    setErrors(_errors);
+    return _errors;
   }
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
@@ -58,12 +61,14 @@ export default function App() {
           id='name'
           value={project.name}
           onChange={onChange}
+          error={errors.name}
         />
         <Input
           label='Description'
           id='description'
           value={project.description}
           onChange={onChange}
+          error={errors.description}
         />
         <button type='submit'>Add Project</button>
       </form>
