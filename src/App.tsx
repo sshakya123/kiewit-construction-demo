@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import Input from './reusuable/Input';
+import Spinner from './reusuable/spinner';
 import { deleteProject, getProjects } from './services/projectService';
 
 export interface Project extends NewProject {
@@ -26,10 +27,12 @@ export default function App() {
   const [project, setProject] = useState(newProject);
   const [projects, setProjects] = useState<Project[]>([]);
   const [errors, setErrors] = useState<Errors>({});
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function getAllProjects() {
       const projectsResponse = await getProjects();
+      setLoading(false);
       setProjects(projectsResponse);
     }
     getAllProjects();
@@ -61,6 +64,30 @@ export default function App() {
     setProject({ ...project, [event.target.id]: event.target.value });
   }
 
+  function renderProjects() {
+    if (loading) return <Spinner />;
+
+    return projects.map((project) => (
+      <li key={project.id}>
+        <button
+          onClick={async () => {
+            await deleteProject(project.id);
+            // Option 1: Update local state to reflect the deletion.
+            setProjects(projects.filter((p) => p.id !== project.id));
+
+            // Option 2: Fetch the updated list of projects from the server.
+            // const allProjects = await getProjects();
+            // setProjects(allProjects);
+          }}
+          aria-label={'Delete ' + project.name}
+        >
+          Delete
+        </button>
+        {project.name}
+      </li>
+    ));
+  }
+
   return (
     <>
       <h1>Projects</h1>
@@ -82,27 +109,7 @@ export default function App() {
         />
         <button type='submit'>Add Project</button>
       </form>
-      <ul>
-        {projects.map((project) => (
-          <li key={project.id}>
-            <button
-              onClick={async () => {
-                deleteProject(project.id);
-                // Option 1: Update local state to reflect the deletion
-                setProjects(projects.filter((p) => p.id !== project.id));
-
-                // Option 2: Fetch the updated list of projects from the server
-                // const allProjects = await getProjects();
-                // setProjects(allProjects);
-              }}
-              aria-label={'Delete ' + project.name}
-            >
-              Delete
-            </button>
-            {project.name}
-          </li>
-        ))}
-      </ul>
+      <ul>{renderProjects()}</ul>
     </>
   );
 }
