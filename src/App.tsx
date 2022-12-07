@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { FallbackProps } from 'react-error-boundary';
 import Project from './Project';
-import MyProject from './Project';
 import ErrorBoundary from './reusuable/ErrorBoundary';
 import Input from './reusuable/Input';
 import Spinner from './reusuable/Spinner';
 import { getProjects } from './services/projectService';
+import { ErrorWithMessage, toErrorWithMessage } from './utils/errorUtils';
 
 export interface Project extends NewProject {
   id: number;
@@ -22,7 +22,7 @@ const newProject: NewProject = {
 };
 
 // Contains an optional property for storing the validation error message for each field
-type Errors = {
+type ValidationErrors = {
   name?: string;
   description?: string;
 };
@@ -30,8 +30,11 @@ type Errors = {
 export default function App() {
   const [project, setProject] = useState(newProject);
   const [projects, setProjects] = useState<Project[]>([]);
-  const [errors, setErrors] = useState<Errors>({});
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
+    {}
+  );
   const [loading, setLoading] = useState(true);
+  const [appError, setAppError] = useState<ErrorWithMessage | null>(null);
 
   useEffect(() => {
     async function getAllProjects() {
@@ -49,19 +52,23 @@ export default function App() {
 
   function validate() {
     // Using underscore to avoid shadowing the parent scope's errors variable
-    const _errors: Errors = {};
+    const _errors: ValidationErrors = {};
     if (!project.name) _errors.name = 'Name is required';
     if (!project.description) _errors.description = 'Description is required';
-    setErrors(_errors);
+    setValidationErrors(_errors);
     return _errors;
   }
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const formIsValid = Object.keys(validate()).length === 0; // it's valid if validate returns an empty object
-    if (!formIsValid) return; // return early if the form is invalid
-    setProjects([...projects, { ...project, id: projects.length + 1 }]);
-    setProject(newProject);
+    try {
+      event.preventDefault();
+      const formIsValid = Object.keys(validate()).length === 0; // it's valid if validate returns an empty object
+      if (!formIsValid) return; // return early if the form is invalid
+      setProjects([...projects, { ...project, id: projects.length + 1 }]);
+      setProject(newProject);
+    } catch (err) {
+      setAppError(toErrorWithMessage(err));
+    }
   }
 
   function onChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -69,7 +76,6 @@ export default function App() {
   }
 
   function renderProjects() {
-    // throw new Error("oops");
     if (loading) return <Spinner />;
 
     return projects.map((project) => (
@@ -82,6 +88,8 @@ export default function App() {
     ));
   }
 
+  if (appError) throw appError;
+
   return (
     <>
       <h1>Projects</h1>
@@ -93,22 +101,35 @@ export default function App() {
             id='name'
             value={project.name}
             onChange={onChange}
-            error={errors.name}
+            error={validationErrors.name}
           />
           <Input
             label='Description'
             id='description'
             value={project.description}
             onChange={onChange}
-            error={errors.description}
+            error={validationErrors.description}
           />
           <button type='submit'>Add Project</button>
         </form>
       </ErrorBoundary>
 
-      <ErrorBoundary>
+      <ErrorBoundary FallbackComponent={ProjectListErrorFallback}>
         <ul>{renderProjects()}</ul>
       </ErrorBoundary>
     </>
+  );
+}
+
+function ProjectListErrorFallback({
+  error,
+  resetErrorBoundary,
+}: FallbackProps) {
+  return (
+    <div role='alert'>
+      <p>Sorry, the project list failed to load.</p>
+      <pre>{error.message}</pre>
+      <button onClick={resetErrorBoundary}>Try again</button>
+    </div>
   );
 }
