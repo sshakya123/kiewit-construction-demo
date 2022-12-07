@@ -15,8 +15,8 @@ export async function deleteProject(id: number) {
 	if (!res.ok) throw new Error(res.statusText);
 }
 
-export async function getProjectById(id: Number) {
-	const res = await fetch("http://localhost:3001/projects/" + id);
+export async function getProjectById(id: number) {
+	const res = await fetch(`http://localhost:3001/projects/${id}`);
 	if (!res.ok) throw new Error(res.statusText);
 	return res.json() as Promise<Project>;
-}
+}  

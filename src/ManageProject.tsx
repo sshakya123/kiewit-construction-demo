@@ -32,13 +32,12 @@ export default function ManageProject() {
 
   useEffect(() => {
     async function getProject() {
-      if (!projectId) return;
-      const projectResponse = await getProjectById(Number(projectId));
-      setProject(projectResponse);
+      if (!projectId) return; // return early if there's no projectId (i.e. we're on the "Add Project" page)
+      const res = await getProjectById(Number(projectId));
+      setProject(res);
       setLoading(false);
     }
     getProject();
-    // Empty dependency list below means "Run this effect once after the first render."
   }, []);
 
   function onChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -67,11 +66,11 @@ export default function ManageProject() {
   }
 
   if (appError) throw appError;
-  if (loading) return <Spinner />;
 
   return (
     <>
       <h1>Manage Project</h1>
+
       {loading ? (
         <Spinner />
       ) : (
