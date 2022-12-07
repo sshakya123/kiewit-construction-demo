@@ -1,6 +1,26 @@
 {
   "projects": [
     {
+      "id": 1,
+      "name": "Lenexa Nuclear Power Plant",
+      "description": "Nuke Plant"
+    },
+    {
+      "id": 2,
+      "name": "Clean Coal Plant",
+      "description": "Clean Version"
+    },
+    {
+      "id": 3,
+      "name": "Lenexa Nuclear Power Plant V2",
+      "description": "Nuke Plant Second"
+    },
+    {
+      "id": 4,
+      "name": "Lenexa Nuclear Power Plant v3",
+      "description": "uke Plant Third"
+    },
+    {
       "id": 5,
       "name": "Lenexa Nuclear Power Plant v4",
       "description": "Nuke Plant Four"
