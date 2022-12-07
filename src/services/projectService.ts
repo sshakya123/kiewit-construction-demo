@@ -1,4 +1,4 @@
-import { Project } from "../App";
+import { Project } from "../Projects";
 
 export async function getProjects() {
 	const res = await fetch("http://localhost:3001/projects");

@@ -1,6 +1,6 @@
 import toast from 'react-hot-toast';
 // Using the type keyword to resolve naming collision.
-import { Project as ProjectType } from './App';
+import { Project as ProjectType } from './Projects';
 import { deleteProject } from './services/projectService';
 
 type ProjectProps = {
