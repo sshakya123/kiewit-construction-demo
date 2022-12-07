@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import { FallbackProps } from 'react-error-boundary';
+import Project from './Project';
 import MyProject from './Project';
 import ErrorBoundary from './reusuable/ErrorBoundary';
 import Input from './reusuable/Input';
@@ -71,7 +73,7 @@ export default function App() {
     if (loading) return <Spinner />;
 
     return projects.map((project) => (
-      <MyProject
+      <Project
         key={project.id}
         project={project}
         projects={projects}
