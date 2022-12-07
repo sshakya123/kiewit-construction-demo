@@ -1,5 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import Input from './reusuable/Input';
+import Spinner from './reusuable/Spinner';
+import { getProjectById } from './services/projectService';
 import { ErrorWithMessage, toErrorWithMessage } from './utils/errorUtils';
 
 // Contains an optional property for storing the validation error message for each field
@@ -19,11 +22,24 @@ const newProject: NewProject = {
 };
 
 export default function ManageProject() {
+  const { projectId } = useParams<{ projectId: string }>();
   const [project, setProject] = useState(newProject);
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
     {}
   );
   const [appError, setAppError] = useState<ErrorWithMessage | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function getProject() {
+      if (!projectId) return;
+      const projectResponse = await getProjectById(Number(projectId));
+      setProject(projectResponse);
+      setLoading(false);
+    }
+    getProject();
+    // Empty dependency list below means "Run this effect once after the first render."
+  }, []);
 
   function onChange(event: React.ChangeEvent<HTMLInputElement>) {
     setProject({ ...project, [event.target.id]: event.target.value });
@@ -51,28 +67,33 @@ export default function ManageProject() {
   }
 
   if (appError) throw appError;
+  if (loading) return <Spinner />;
 
   return (
     <>
-      <h1>Manage Project</h1>{' '}
-      <form onSubmit={onSubmit}>
-        <h2>Add Project</h2>
-        <Input
-          label='Name'
-          id='name'
-          value={project.name}
-          onChange={onChange}
-          error={validationErrors.name}
-        />
-        <Input
-          label='Description'
-          id='description'
-          value={project.description}
-          onChange={onChange}
-          error={validationErrors.description}
-        />
-        <button type='submit'>Add Project</button>
-      </form>
+      <h1>Manage Project</h1>
+      {loading ? (
+        <Spinner />
+      ) : (
+        <form onSubmit={onSubmit}>
+          <h2>Add Project</h2>
+          <Input
+            label='Name'
+            id='name'
+            value={project.name}
+            onChange={onChange}
+            error={validationErrors.name}
+          />
+          <Input
+            label='Description'
+            id='description'
+            value={project.description}
+            onChange={onChange}
+            error={validationErrors.description}
+          />
+          <button type='submit'>Add Project</button>
+        </form>
+      )}
     </>
   );
 }
