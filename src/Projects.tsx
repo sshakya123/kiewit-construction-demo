@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { FallbackProps } from 'react-error-boundary';
+import { Link } from 'react-router-dom';
 import { NewProject } from './ManageProject';
 import Project from './Project';
 import ErrorBoundary from './reusuable/ErrorBoundary';
@@ -34,25 +35,28 @@ export default function Projects() {
     if (loading) return <Spinner />;
 
     return (
-      <table>
-        <thead>
-          <tr>
-            <th>&nbsp;</th>
-            <th>Name</th>
-            <th>Description</th>
-          </tr>
-        </thead>
-        <tbody>
-          {projects.map((project) => (
-            <Project
-              key={project.id}
-              project={project}
-              projects={projects}
-              setProjects={setProjects}
-            />
-          ))}
-        </tbody>
-      </table>
+      <>
+        <Link to='/manage-project'>Add Project</Link>
+        <table>
+          <thead>
+            <tr>
+              <th>&nbsp;</th>
+              <th>Name</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            {projects.map((project) => (
+              <Project
+                key={project.id}
+                project={project}
+                projects={projects}
+                setProjects={setProjects}
+              />
+            ))}
+          </tbody>
+        </table>
+      </>
     );
   }
 

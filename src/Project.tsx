@@ -43,7 +43,7 @@ export default function Project({
       </td>
       <td>
         {' '}
-        <Link to={'/projects/' + project.id}>{project.name}</Link>
+        <Link to={'/manage-project/' + project.id}>{project.name}</Link>
       </td>
       <td>{project.description}</td>
     </tr>
