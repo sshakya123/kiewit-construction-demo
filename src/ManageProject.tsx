@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Input from './reusuable/Input';
 import { ErrorWithMessage, toErrorWithMessage } from './utils/errorUtils';
 
+// Contains an optional property for storing the validation error message for each field
 type ValidationErrors = {
   name?: string;
   description?: string;
@@ -24,18 +25,6 @@ export default function ManageProject() {
   );
   const [appError, setAppError] = useState<ErrorWithMessage | null>(null);
 
-  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-    try {
-      event.preventDefault();
-      const formIsValid = Object.keys(validate()).length === 0; // it's valid if validate returns an empty object
-      if (!formIsValid) return; // return early if the form is invalid
-      //   setProjects([...projects, { ...project, id: projects.length + 1 }]);
-      setProject(newProject);
-    } catch (err) {
-      setAppError(toErrorWithMessage(err));
-    }
-  }
-
   function onChange(event: React.ChangeEvent<HTMLInputElement>) {
     setProject({ ...project, [event.target.id]: event.target.value });
   }
@@ -49,11 +38,23 @@ export default function ManageProject() {
     return _errors;
   }
 
+  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+    try {
+      event.preventDefault();
+      const formIsValid = Object.keys(validate()).length === 0; // it's valid if validate returns an empty object
+      if (!formIsValid) return; // return early if the form is invalid
+      //   setProjects([...projects, { ...project, id: projects.length + 1 }]);
+      setProject(newProject);
+    } catch (err) {
+      setAppError(toErrorWithMessage(err));
+    }
+  }
+
   if (appError) throw appError;
 
   return (
     <>
-      <h1>Manage Project</h1>;
+      <h1>Manage Project</h1>{' '}
       <form onSubmit={onSubmit}>
         <h2>Add Project</h2>
         <Input

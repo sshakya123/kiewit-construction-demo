@@ -15,7 +15,6 @@ export default function Projects() {
   const [projects, setProjects] = useState<Project[]>([]);
 
   const [loading, setLoading] = useState(true);
-  const [appError, setAppError] = useState<ErrorWithMessage | null>(null);
 
   useEffect(() => {
     async function getAllProjects() {
@@ -27,13 +26,18 @@ export default function Projects() {
     // Empty dependency list below means "Run this effect once after the first render."
   }, []);
 
+  // function renderProject(project: Project) {
+  //   return <li key={project.id}>{project.name}</li>;
+  // }
+
   function renderProjects() {
     if (loading) return <Spinner />;
+
     return (
       <table>
         <thead>
           <tr>
-            <th></th>
+            <th>&nbsp;</th>
             <th>Name</th>
             <th>Description</th>
           </tr>
@@ -52,11 +56,10 @@ export default function Projects() {
     );
   }
 
-  if (appError) throw appError;
-
   return (
     <>
       <h1>Projects</h1>
+
       <ErrorBoundary FallbackComponent={ProjectListErrorFallback}>
         {renderProjects()}
       </ErrorBoundary>
