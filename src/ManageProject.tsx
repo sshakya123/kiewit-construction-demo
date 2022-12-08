@@ -1,9 +1,15 @@
 import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
+import { Project } from './Projects';
 import Input from './reusuable/Input';
 import Spinner from './reusuable/Spinner';
-import { getProjectById } from './services/projectService';
-import { ErrorWithMessage, toErrorWithMessage } from './utils/errorUtils';
+import {
+  createProject,
+  editProject,
+  getProjectById,
+} from "./services/projectService";
+import { ErrorWithMessage, toErrorWithMessage } from "./utils/errorUtils";
 
 // Contains an optional property for storing the validation error message for each field
 type ValidationErrors = {
@@ -17,28 +23,28 @@ export interface NewProject {
 }
 
 const newProject: NewProject = {
-  name: '',
-  description: '',
+  name: "",
+  description: "",
 };
 
 export default function ManageProject() {
   const { projectId } = useParams<{ projectId: string }>();
-  const [project, setProject] = useState(newProject);
+  const [project, setProject] = useState<Project | NewProject>(newProject);
   const [validationErrors, setValidationErrors] = useState<ValidationErrors>(
     {}
   );
   const [appError, setAppError] = useState<ErrorWithMessage | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const isEditing = Boolean(projectId);
-  const formVerb = isEditing ? 'Edit' : 'Add';
+  // Derived state
+  const formVerb = Boolean(projectId) ? "Edit" : "Add";
 
   useEffect(() => {
     async function getProject() {
       if (!projectId) {
         setLoading(false);
-        return;
-      } // return early if there's no projectId (i.e. we're on the "Add Project" page)
+        return; // return early if there's no projectId (i.e. we're on the "Add Project" page)
+      }
       const res = await getProjectById(Number(projectId));
       setProject(res);
       setLoading(false);
@@ -53,21 +59,26 @@ export default function ManageProject() {
   function validate() {
     // Using underscore to avoid shadowing the parent scope's errors variable
     const _errors: ValidationErrors = {};
-    if (!project.name) _errors.name = 'Name is required';
-    if (!project.description) _errors.description = 'Description is required';
+    if (!project.name) _errors.name = "Name is required";
+    if (!project.description) _errors.description = "Description is required";
     setValidationErrors(_errors);
     return _errors;
   }
 
-  function onSubmit(event: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     try {
       event.preventDefault();
       const formIsValid = Object.keys(validate()).length === 0; // it's valid if validate returns an empty object
       if (!formIsValid) return; // return early if the form is invalid
-      //   setProjects([...projects, { ...project, id: projects.length + 1 }]);
+      // If there's an id property on the project, then we're editing an existing project
+      "id" in project
+        ? await editProject(project)
+        : await createProject(project);
       setProject(newProject);
+      toast.success("Project saved");
     } catch (err) {
-      setAppError(toErrorWithMessage(err));
+      toast.error("Error saving project");
+      // setAppError(toErrorWithMessage(err));
     }
   }
 
@@ -83,20 +94,20 @@ export default function ManageProject() {
         <form onSubmit={onSubmit}>
           <h2>{formVerb} Project</h2>
           <Input
-            label='Name'
-            id='name'
+            label="Name"
+            id="name"
             value={project.name}
             onChange={onChange}
             error={validationErrors.name}
           />
           <Input
-            label='Description'
-            id='description'
+            label="Description"
+            id="description"
             value={project.description}
             onChange={onChange}
             error={validationErrors.description}
           />
-          <button type='submit'>{formVerb} Project</button>
+          <button type="submit">{formVerb} Project</button>
         </form>
       )}
     </>
