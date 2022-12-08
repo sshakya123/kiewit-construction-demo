@@ -1,3 +1,4 @@
+import { Button } from '@ktg/foundation-components';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useParams } from 'react-router-dom';
@@ -35,6 +36,7 @@ export default function ManageProject() {
   );
   const [appError, setAppError] = useState<ErrorWithMessage | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
 
   // Derived state
   const formVerb = Boolean(projectId) ? "Edit" : "Add";
@@ -70,6 +72,7 @@ export default function ManageProject() {
       event.preventDefault();
       const formIsValid = Object.keys(validate()).length === 0; // it's valid if validate returns an empty object
       if (!formIsValid) return; // return early if the form is invalid
+      setIsSaving(true);
       // If there's an id property on the project, then we're editing an existing project
       "id" in project
         ? await editProject(project)
@@ -79,6 +82,9 @@ export default function ManageProject() {
     } catch (err) {
       toast.error("Error saving project");
       // setAppError(toErrorWithMessage(err));
+    } finally {
+      // Always hide the spinner, even if there's an error
+      setIsSaving(false);
     }
   }
 
@@ -107,7 +113,9 @@ export default function ManageProject() {
             onChange={onChange}
             error={validationErrors.description}
           />
-          <button type="submit">{formVerb} Project</button>
+          <Button htmlType="submit" loading={isSaving}>
+            {formVerb} Project
+          </Button>
         </form>
       )}
     </>
