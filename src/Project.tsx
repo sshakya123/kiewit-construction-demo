@@ -7,28 +7,21 @@ import { deleteProject } from './services/projectService';
 type ProjectProps = {
   project: ProjectType;
   projects: ProjectType[];
-  setProjects: React.Dispatch<React.SetStateAction<ProjectType[]>>;
 };
 
-export default function Project({
-  project,
-  projects,
-  setProjects,
-}: ProjectProps) {
+export default function Project({ project, projects }: ProjectProps) {
   return (
     <tr key={project.id}>
       <td>
         {' '}
         <button
           onClick={async () => {
-            const currentProjects = [...projects]; // Copy current projects so we can rollback if the delete fails
+            // Try to mutate
             try {
-              setProjects(projects.filter((p) => p.id !== project.id));
               await deleteProject(project.id);
               // Option 1: Update local state to reflect the deletion.
               toast.success(project.name + ' deleted');
             } catch (error) {
-              setProjects(currentProjects);
               toast.error('Error deleting ' + project.name);
             }
 
