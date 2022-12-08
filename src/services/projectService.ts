@@ -1,3 +1,4 @@
+import { NewProject } from "../ManageProject";
 import { Project } from "../Projects";
 
 export async function getProjects() {
@@ -19,4 +20,28 @@ export async function getProjectById(id: number) {
 	const res = await fetch(`http://localhost:3001/projects/${id}`);
 	if (!res.ok) throw new Error(res.statusText);
 	return res.json() as Promise<Project>;
-}  
+}
+
+export async function createProject(project: NewProject) {
+	const res = await fetch("http://localhost:3001/projects", {
+		method: "POST",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(project),
+	});
+	if (!res.ok) throw new Error(res.statusText);
+	return res.json() as Promise<Project>;
+}
+
+export async function editProject(project: Project) {
+	const res = await fetch("http://localhost:3001/projects/" + project.id, {
+		method: "PUT",
+		headers: {
+			"Content-Type": "application/json",
+		},
+		body: JSON.stringify(project),
+	});
+	if (!res.ok) throw new Error(res.statusText);
+	return res.json() as Promise<Project>;
+}
