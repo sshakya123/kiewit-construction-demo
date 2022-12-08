@@ -4,20 +4,21 @@ import ManageProject from './ManageProject';
 import Nav from './Nav';
 import PageNotFound from './PageNotFound';
 import Projects from './Projects';
+import ErrorBoundary from './reusuable/ErrorBoundary';
 
 export default function App() {
   return (
     <>
       <Nav />
       <Routes>
-        <Route path='/' element={<Projects />} />
+        <Route path='/' element={<ErrorBoundary><Projects /></ErrorBoundary>} />
 
         {/* Add Route */}
-        <Route path='/manage-project' element={<ManageProject />} />
+        <Route path='/manage-project' element={<ErrorBoundary><ManageProject /></ErrorBoundary>} />
 
         {/* Manage Route */}
-        <Route path='/manage-project/:projectId' element={<ManageProject />} />
-        <Route path='/about' element={<About />} />
+        <Route path='/manage-project/:projectId' element={<ErrorBoundary><ManageProject /></ErrorBoundary>} />
+        <Route path='/about' element={<ErrorBoundary><About /></ErrorBoundary>} />
         <Route path='*' element={<PageNotFound />} />
       </Routes>
     </>
